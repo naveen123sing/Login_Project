@@ -1,0 +1,38 @@
+.Header {
+    background-image: url(../assets/horse.webp);
+    background-size: cover;
+
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.navbar-brand {
+    margin-left: 20px;
+    font-size: larger;
+}
+
+ul,
+li {
+    list-style-type: none;
+    display: inline;
+    padding: 10px;
+    margin-left: 50px;
+    justify-content: space-between;
+
+}
+
+.Heading-content {
+    text-align: center;
+    color: white;
+}
+
+.Heading {
+    font-size: 64px;
+    margin-top: 300px;
+    color: white;
+}
