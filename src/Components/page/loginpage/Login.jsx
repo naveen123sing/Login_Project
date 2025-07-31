@@ -6,18 +6,19 @@ import './Login.css';
 
 function Login() {
   const [islogedin, setIsLogin] = useState(true);
-  const [username, setUserName] = useState();
-  const [password, setPassword] = useState();
+  const [username, setUserName] = useState(''); 
+  const [password, setPassword] = useState('');  
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const hundlesubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = await login({ username, password });
-    if (success) {
-      navigate('/Dashboard');
-    } else {
-      alert('Invailed credentials');
+    try {
+      await login(username, password);
+      navigate('/dashboard');
+    } catch (err) {
+      alert('Invalid login');
+      console.error(err);
     }
   };
 
@@ -26,12 +27,17 @@ function Login() {
       {islogedin ? (
         <div className="container bg-white mt-5 mb-5">
           <div className="form-container">
-            <Form onSubmit={hundlesubmit} >
+            <Form onSubmit={handleSubmit} >
               <h3 className='Login'>Login</h3>
               <section >
                 <Form.Group className="mb-3">
-                  <Form.Label>Email address</Form.Label>
-                  <Form.Control type="email" value={username} onChange={(e) => setUserName(e.target.value)} placeholder="Enter user name" />
+                  <Form.Label>Username</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUserName(e.target.value)}
+                    placeholder="Enter user name"
+                  />
                 </Form.Group>
               </section>
               <section>
@@ -56,7 +62,7 @@ function Login() {
               <section >
                 <Form.Group className="mb-3">
                   <Form.Label>Full Name</Form.Label>
-                  <Form.Control type="email" placeholder="Enter Full Name" />
+                  <Form.Control type="text" placeholder="Enter Full Name" />
                 </Form.Group>
               </section>
               <section>

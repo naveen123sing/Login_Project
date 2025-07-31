@@ -1,50 +1,30 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
+import AuthService from './services/AuthService';
 
-const AuthContext = createContext(null);
+const AuthContext = createContext();
+
+const user = AuthService.getCurrentUser();
+console.log('Logged-in user:', user);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(AuthService.isLoggedIn());
 
-  const login = async (credentials) => {
-
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        if (credentials.username === 'user' && credentials.password === 'pass') {
-          const userData = { username: credentials.username, token: 'some_jwt_token' };
-          setUser(userData);
-          localStorage.setItem('user', JSON.stringify(userData));
-          resolve(true);
-        } else {
-          resolve(false);
-        }
-      }, 500);
-    });
+  const login = async (username, password) => {
+    const result = await AuthService.login(username, password);
+    setIsAuthenticated(true);
+    return result;
   };
 
   const logout = () => {
-    setUser(null);
-    localStorage.removeItem('user');
+    AuthService.logout();
+    setIsAuthenticated(false);
   };
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setLoading(false);
-  }, []);
-
-  const value = {
-    user,
-    loading,
-    login,
-    logout,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+export const useAuth = () => useContext(AuthContext);
